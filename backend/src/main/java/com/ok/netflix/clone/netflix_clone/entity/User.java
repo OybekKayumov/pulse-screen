@@ -1,4 +1,4 @@
-package com.ok.netflix.clone.netflix_clone.dto.entity;
+package com.ok.netflix.clone.netflix_clone.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ok.netflix.clone.netflix_clone.enums.Role;

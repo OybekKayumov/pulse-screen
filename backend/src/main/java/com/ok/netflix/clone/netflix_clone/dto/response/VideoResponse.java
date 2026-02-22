@@ -1,6 +1,6 @@
 package com.ok.netflix.clone.netflix_clone.dto.response;
 
-import com.ok.netflix.clone.netflix_clone.dto.entity.Video;
+import com.ok.netflix.clone.netflix_clone.entity.Video;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

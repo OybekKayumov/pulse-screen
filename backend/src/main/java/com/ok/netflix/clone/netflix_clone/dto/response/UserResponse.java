@@ -1,6 +1,6 @@
 package com.ok.netflix.clone.netflix_clone.dto.response;
 
-import com.ok.netflix.clone.netflix_clone.dto.entity.User;
+import com.ok.netflix.clone.netflix_clone.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

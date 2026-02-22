@@ -73,6 +73,7 @@ public class JwtUtil {
 	}
 
 	public Boolean validateToken(String token) {
+
 		try {
 
 			getAllClaimsFromToken(token);
@@ -81,6 +82,5 @@ public class JwtUtil {
 		} catch (Exception e) {
 			return false;
 		}
-
 	}
 }

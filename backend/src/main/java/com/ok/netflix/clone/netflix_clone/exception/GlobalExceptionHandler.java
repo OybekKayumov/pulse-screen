@@ -1,5 +1,6 @@
 package com.ok.netflix.clone.netflix_clone.exception;
 
+import org.apache.catalina.connector.ClientAbortException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.async.AsyncRequestNotUsableException;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -96,6 +98,19 @@ public class GlobalExceptionHandler {
 						.body(Map.of("timestamp", Instant.now(),
 										"status", status.value(),
 										"error", message));
+	}
+
+	@ExceptionHandler ({AsyncRequestNotUsableException.class,	ClientAbortException.class})
+	public void handleClientAbort(Exception ex) {
+		log.debug("Client closed connection during" +
+						"streaming (expected for video seeking/buffering): {}", ex.getMessage());
+	}
+
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<Map<String, Object>> handleGeneric(Exception ex) {
+
+		log.warn("Exception: {}", ex.getMessage(), ex);
+		return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
 	}
 
 	private ResponseEntity<Map<String, Object>> buildResponse(HttpStatus status, String message) {

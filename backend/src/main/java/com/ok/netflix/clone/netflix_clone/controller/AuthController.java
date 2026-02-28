@@ -1,4 +1,23 @@
 package com.ok.netflix.clone.netflix_clone.controller;
 
+import com.ok.netflix.clone.netflix_clone.dto.request.UserRequest;
+import com.ok.netflix.clone.netflix_clone.dto.response.MessageResponse;
+import com.ok.netflix.clone.netflix_clone.service.AuthService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/auth")
 public class AuthController {
+
+	@Autowired
+	private AuthService authService;
+
+	@PatchMapping("/signup")
+	public ResponseEntity<MessageResponse> signup(@Valid @RequestBody UserRequest userRequest) {
+
+		return ResponseEntity.ok(authService.signup(userRequest));
+	}
 }

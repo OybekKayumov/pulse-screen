@@ -47,7 +47,7 @@ public class User {
 	private String verificationToken;
 
 	@Column
-	private Integer verificationTokenExpiry;
+	private Instant verificationTokenExpiry;
 
 	@Column
 	private String passwordResetToken;

@@ -83,6 +83,7 @@ public class EmailServiceImpl implements EmailService {
 			message.setText(emailBody);
 			mailSender.send(message);
 			logger.info("Password reset email sent to " + toEmail);
+
 		} catch (Exception ex) {
 
 			logger.error("Failed to send password reset email to {}: {}", toEmail, ex.getMessage(), ex);

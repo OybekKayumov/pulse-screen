@@ -15,7 +15,7 @@ public class AuthController {
 	@Autowired
 	private AuthService authService;
 
-	@PatchMapping("/signup")
+	@PostMapping("/signup")
 	public ResponseEntity<MessageResponse> signup(@Valid @RequestBody UserRequest userRequest) {
 
 		return ResponseEntity.ok(authService.signup(userRequest));

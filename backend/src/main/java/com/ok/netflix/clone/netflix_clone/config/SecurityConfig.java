@@ -18,8 +18,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class SecurityConfig {
 
-	@Autowired
-	JwyAuthenticationFilter jwyAuthenticationFilter = new JwyAuthenticationFilter();
+//	@Autowired
+//	JwyAuthenticationFilter jwyAuthenticationFilter = new JwyAuthenticationFilter();
+	@Bean
+	public JwyAuthenticationFilter jwyAuthenticationFilter() {
+		return new JwyAuthenticationFilter();
+	}
 
 	private static final String[] PUBLIC_ENDPOINTS = {
 					"/api/auth/login",
@@ -36,6 +40,7 @@ public class SecurityConfig {
 		return NoOpPasswordEncoder.getInstance();
 	}
 
+	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 		http.csrf(csrf -> csrf.disable())
@@ -45,7 +50,7 @@ public class SecurityConfig {
 														.anyRequest().authenticated())
 						.sessionManagement(session ->
 										session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-						.addFilterBefore(jwyAuthenticationFilter,
+						.addFilterBefore(jwyAuthenticationFilter(),
 										UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();

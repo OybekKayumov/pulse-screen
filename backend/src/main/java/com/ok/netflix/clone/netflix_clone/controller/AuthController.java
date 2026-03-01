@@ -1,5 +1,6 @@
 package com.ok.netflix.clone.netflix_clone.controller;
 
+import com.ok.netflix.clone.netflix_clone.dto.request.EmailRequest;
 import com.ok.netflix.clone.netflix_clone.dto.request.LoginRequest;
 import com.ok.netflix.clone.netflix_clone.dto.request.UserRequest;
 import com.ok.netflix.clone.netflix_clone.dto.response.EmailValidationResponse;
@@ -37,5 +38,18 @@ public class AuthController {
 	public ResponseEntity<EmailValidationResponse> validateEmail(@RequestParam String email) {
 
 		return ResponseEntity.ok(authService.validateEmail(email));
+	}
+
+	@GetMapping("/verify-email")
+	public ResponseEntity<MessageResponse> verifyEmail(@RequestParam String token) {
+
+		return ResponseEntity.ok(authService.verifyEmail(token));
+	}
+
+	@PostMapping("/resend-verification")
+	public ResponseEntity<MessageResponse> resendVerification(
+					@Valid @RequestBody EmailRequest emailRequest) {
+
+		return ResponseEntity.ok(authService.resendVerification(emailRequest.getEmail()));
 	}
 }

@@ -7,10 +7,7 @@ import com.ok.netflix.clone.netflix_clone.dto.response.LoginResponse;
 import com.ok.netflix.clone.netflix_clone.dto.response.MessageResponse;
 import com.ok.netflix.clone.netflix_clone.entity.User;
 import com.ok.netflix.clone.netflix_clone.enums.Role;
-import com.ok.netflix.clone.netflix_clone.exception.AccountDeactivatedException;
-import com.ok.netflix.clone.netflix_clone.exception.BadCredentialException;
-import com.ok.netflix.clone.netflix_clone.exception.EmailAlreadyExistsException;
-import com.ok.netflix.clone.netflix_clone.exception.EmailNotVerifiedException;
+import com.ok.netflix.clone.netflix_clone.exception.*;
 import com.ok.netflix.clone.netflix_clone.security.JwtUtil;
 import com.ok.netflix.clone.netflix_clone.service.AuthService;
 import com.ok.netflix.clone.netflix_clone.service.EmailService;
@@ -100,6 +97,41 @@ public class AuthServiceImpl implements AuthService {
 		boolean exists = userRepo.existsByEmail(email);
 
 		return new EmailValidationResponse(exists, !exists);
+	}
+
+	@Override
+	public MessageResponse verifyEmail(String token) {
+
+		User user = userRepo.findByVerificationToken(token)
+						.orElseThrow(() -> new InvalidTokenException(
+										"Invalid or expired verification token"));
+
+
+		if (user.getVerificationTokenExpiry() == null
+			|| user.getVerificationTokenExpiry().isBefore(Instant.now())) {
+			throw new InvalidTokenException("Invalid or expired verification token");
+		}
+
+		user.setEmailVerified(true);
+		user.setVerificationToken(null);
+		user.setVerificationTokenExpiry(null);
+		userRepo.save(user);
+
+		return  new MessageResponse("Verification successful")  ;
+	}
+
+	@Override
+	public MessageResponse resendVerification(String email) {
+
+		User user = serviceUtils.getUserByEmailOrThrow(email);
+
+		String verificationToken = UUID.randomUUID().toString();
+		user.setVerificationToken(verificationToken);
+		user.setVerificationTokenExpiry(Instant.now().plusSeconds(864000));
+		userRepo.save(user);
+		emailService.senVerificationEmail(email, verificationToken);
+
+		return new MessageResponse("Verification successful")  ;
 	}
 
 }

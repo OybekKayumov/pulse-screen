@@ -14,4 +14,8 @@ public interface AuthService {
 	LoginResponse login(String email, String password);
 
 	EmailValidationResponse validateEmail(String email);
+
+	MessageResponse verifyEmail(String token);
+
+	MessageResponse resendVerification(String email);
 }

@@ -2,6 +2,7 @@ package com.ok.netflix.clone.netflix_clone.controller;
 
 import com.ok.netflix.clone.netflix_clone.dto.request.LoginRequest;
 import com.ok.netflix.clone.netflix_clone.dto.request.UserRequest;
+import com.ok.netflix.clone.netflix_clone.dto.response.EmailValidationResponse;
 import com.ok.netflix.clone.netflix_clone.dto.response.LoginResponse;
 import com.ok.netflix.clone.netflix_clone.dto.response.MessageResponse;
 import com.ok.netflix.clone.netflix_clone.service.AuthService;
@@ -30,5 +31,11 @@ public class AuthController {
 						loginRequest.getEmail(), loginRequest.getPassword());
 
 		return ResponseEntity.ok(response);
+	}
+
+	@GetMapping("/validate-email")
+	public ResponseEntity<EmailValidationResponse> validateEmail(@RequestParam String email) {
+
+		return ResponseEntity.ok(authService.validateEmail(email));
 	}
 }

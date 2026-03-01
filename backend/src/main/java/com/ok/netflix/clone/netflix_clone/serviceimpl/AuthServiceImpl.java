@@ -2,6 +2,7 @@ package com.ok.netflix.clone.netflix_clone.serviceimpl;
 
 import com.ok.netflix.clone.netflix_clone.dao.UserRepo;
 import com.ok.netflix.clone.netflix_clone.dto.request.UserRequest;
+import com.ok.netflix.clone.netflix_clone.dto.response.EmailValidationResponse;
 import com.ok.netflix.clone.netflix_clone.dto.response.LoginResponse;
 import com.ok.netflix.clone.netflix_clone.dto.response.MessageResponse;
 import com.ok.netflix.clone.netflix_clone.entity.User;
@@ -15,8 +16,11 @@ import com.ok.netflix.clone.netflix_clone.service.AuthService;
 import com.ok.netflix.clone.netflix_clone.service.EmailService;
 import com.ok.netflix.clone.netflix_clone.util.ServiceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -38,7 +42,6 @@ public class AuthServiceImpl implements AuthService {
 
 	@Autowired
 	private ServiceUtils serviceUtils;
-
 
 	@Override
 	public MessageResponse signup(UserRequest userRequest) {
@@ -90,4 +93,13 @@ public class AuthServiceImpl implements AuthService {
 						user.getFullName(),
 						user.getRole().name());
 	}
+
+	@Override
+	public EmailValidationResponse validateEmail(String email) {
+
+		boolean exists = userRepo.existsByEmail(email);
+
+		return new EmailValidationResponse(exists, !exists);
+	}
+
 }

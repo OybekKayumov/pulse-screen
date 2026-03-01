@@ -79,4 +79,12 @@ public class AuthController {
 						changePasswordRequest.getCurrentPassword(),
 						changePasswordRequest.getNewPassword()));
 	}
+
+	@GetMapping("/current-user")
+	public ResponseEntity<LoginResponse>  currentUser(Authentication authentication) {
+
+		String email = authentication.getName();
+
+		return ResponseEntity.ok(authService.currentUser(email));
+	}
 }

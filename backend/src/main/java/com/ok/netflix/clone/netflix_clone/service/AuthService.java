@@ -7,6 +7,7 @@ import com.ok.netflix.clone.netflix_clone.dto.response.MessageResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public interface AuthService {
 	MessageResponse signup(@Valid UserRequest userRequest);
@@ -18,4 +19,11 @@ public interface AuthService {
 	MessageResponse verifyEmail(String token);
 
 	MessageResponse resendVerification(String email);
+
+	MessageResponse forgotPassword(String email);
+
+	MessageResponse resetPassword(String token, String newPassword);
+
+	MessageResponse changePassword(String email, String currentPassword,
+	                      String newPassword);
 }

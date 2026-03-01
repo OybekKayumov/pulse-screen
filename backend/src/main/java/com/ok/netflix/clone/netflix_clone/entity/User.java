@@ -53,7 +53,7 @@ public class User {
 	private String passwordResetToken;
 
 	@Column
-	private String passwordResetTokenExpiry;
+	private Instant passwordResetTokenExpiry;
 
 	@CreationTimestamp
 	@Column(nullable = false, updatable = false)

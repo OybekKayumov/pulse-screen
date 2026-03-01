@@ -1,8 +1,6 @@
 package com.ok.netflix.clone.netflix_clone.controller;
 
-import com.ok.netflix.clone.netflix_clone.dto.request.EmailRequest;
-import com.ok.netflix.clone.netflix_clone.dto.request.LoginRequest;
-import com.ok.netflix.clone.netflix_clone.dto.request.UserRequest;
+import com.ok.netflix.clone.netflix_clone.dto.request.*;
 import com.ok.netflix.clone.netflix_clone.dto.response.EmailValidationResponse;
 import com.ok.netflix.clone.netflix_clone.dto.response.LoginResponse;
 import com.ok.netflix.clone.netflix_clone.dto.response.MessageResponse;
@@ -10,6 +8,7 @@ import com.ok.netflix.clone.netflix_clone.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -51,5 +50,33 @@ public class AuthController {
 					@Valid @RequestBody EmailRequest emailRequest) {
 
 		return ResponseEntity.ok(authService.resendVerification(emailRequest.getEmail()));
+	}
+
+	@PostMapping("/forgot-password")
+	public ResponseEntity<MessageResponse> forgotPassword(
+					@Valid @RequestBody EmailRequest emailRequest) {
+
+		return ResponseEntity.ok(authService.forgotPassword(emailRequest.getEmail()));
+	}
+
+	@PostMapping("/reset-password")
+	public ResponseEntity<MessageResponse> resetPassword(
+					@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
+
+		return ResponseEntity.ok(authService.resetPassword(
+						resetPasswordRequest.getToken(), resetPasswordRequest.getNewPassword()));
+	}
+
+	@PostMapping("/change-password")
+	public ResponseEntity<?> changePassword(
+					Authentication authentication,
+					@Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
+
+		String email = authentication.getName();
+
+		return ResponseEntity.ok(authService.changePassword(
+						email,
+						changePasswordRequest.getCurrentPassword(),
+						changePasswordRequest.getNewPassword()));
 	}
 }

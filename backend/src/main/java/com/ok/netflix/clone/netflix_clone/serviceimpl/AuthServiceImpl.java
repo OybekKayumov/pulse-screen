@@ -2,10 +2,14 @@ package com.ok.netflix.clone.netflix_clone.serviceimpl;
 
 import com.ok.netflix.clone.netflix_clone.dao.UserRepo;
 import com.ok.netflix.clone.netflix_clone.dto.request.UserRequest;
+import com.ok.netflix.clone.netflix_clone.dto.response.LoginResponse;
 import com.ok.netflix.clone.netflix_clone.dto.response.MessageResponse;
 import com.ok.netflix.clone.netflix_clone.entity.User;
 import com.ok.netflix.clone.netflix_clone.enums.Role;
+import com.ok.netflix.clone.netflix_clone.exception.AccountDeactivatedException;
+import com.ok.netflix.clone.netflix_clone.exception.BadCredentialException;
 import com.ok.netflix.clone.netflix_clone.exception.EmailAlreadyExistsException;
+import com.ok.netflix.clone.netflix_clone.exception.EmailNotVerifiedException;
 import com.ok.netflix.clone.netflix_clone.security.JwtUtil;
 import com.ok.netflix.clone.netflix_clone.service.AuthService;
 import com.ok.netflix.clone.netflix_clone.service.EmailService;
@@ -60,5 +64,30 @@ public class AuthServiceImpl implements AuthService {
 		return new MessageResponse(
 						"Registration successful! Please check your email to verify your " +
 										"account");
+	}
+
+	@Override
+	public LoginResponse login(String email, String password) {
+		User user = userRepo.findByEmail(email)
+						.filter(u -> passwordEncoder.matches(password, u.getPassword()))
+						.orElseThrow(() -> new BadCredentialException(
+										"Invalid email or password"));
+
+		if (!user.isActive()) {
+			throw new AccountDeactivatedException("Account has been deactivated");
+		}
+
+		if (!user.isEmailVerified()) {
+			throw new EmailNotVerifiedException("Please verify your email before logging in");
+		}
+
+		final String token = jwtUtil.generateToken(
+						user.getEmail(), user.getRole().name());
+
+		return new LoginResponse(
+						token,
+						user.getEmail(),
+						user.getFullName(),
+						user.getRole().name());
 	}
 }
